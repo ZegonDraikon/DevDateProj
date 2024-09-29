@@ -1,0 +1,25 @@
+{
+  "name": "devdate",
+  "version": "1.0.0",
+  "description": "Tinder For Devs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "node",
+    "js",
+    "javascript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "mongodb": "^6.9.0",
+    "mongoose": "^8.6.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21"
+  }
+}
