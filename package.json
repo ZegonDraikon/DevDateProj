@@ -2,10 +2,10 @@
   "name": "devdate",
   "version": "1.0.0",
   "description": "Tinder For Devs",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+    "dev": "nodemon src/app.js"
   },
   "keywords": [
     "node",
@@ -15,9 +15,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "express": "^4.21.0",
-    "mongodb": "^6.9.0",
-    "mongoose": "^8.6.4"
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.9.5",
+    "validator": "^13.12.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21"
