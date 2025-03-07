@@ -1,80 +1,21 @@
 const express = require("express");
-const connectDB = require("./config/database"); // Import connection function
-const User = require("./models/user"); // Import User model
-const bcrypt = require("bcryptjs");
+const connectDB = require("./config/database"); 
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
-const { validateSignUpData } = require("./utils/validation");
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
 
-// Signup API for registering a user
-app.post("/signup", async (req, res) => {
-    try {
-        const { firstName, lastName, emailId, password } = req.body;
-        validateSignUpData(req.body);
+const authRouter = require('./routes/auth');
+const profileRouter = require('./routes/profile');
+const requestRouter = require('./routes/request');
 
-        const passwordHash = await bcrypt.hash(password, 10);
-        const user = new User({ firstName, lastName, emailId, password: passwordHash });
-        
-        await user.save();
-        res.status(201).send("User added successfully");
-    } catch (err) {
-        res.status(400).send("Error in saving the user: " + err.message);
-    }
-});
+app.use ('/', authRouter);
+app.use('/', profileRouter);
+app.use('/', requestRouter);
 
-// Login API
-app.post('/login', async (req, res) => {
-    try {
-        const { emailId, password } = req.body;
-        const user = await User.findOne({ emailId });
 
-        if (!user) return res.status(400).send("User not found");
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) return res.status(400).send("Invalid credentials");
-
-        const token = jwt.sign({ _id: user._id }, "DEVTINDER1234", { expiresIn: "1h" });
-        res.cookie("token", token, { httpOnly: true });
-        res.send("Login successful");
-    } catch (err) {
-        res.status(400).send("Error in login: " + err.message);
-    }
-});
-
-// Profile API (protected route)
-app.get('/profile', async (req, res) => {
-    try {
-        const { token } = req.cookies;
-        if (!token) return res.status(401).send("Unauthorized");
-
-        const decoded = jwt.verify(token, "DEVTINDER1234");
-        const user = await User.findById(decoded._id);
-        if (!user) return res.status(404).send("User not found");
-
-        res.send(user);
-    } catch (err) {
-        res.status(400).send("Error fetching profile: " + err.message);
-    }
-});
-
-// Get user by email
-app.get("/user", async (req, res) => {
-    try {
-        const { emailId } = req.body;
-        const user = await User.findOne({ emailId });
-        if (!user) return res.status(404).send("User not found");
-        res.send(user);
-    } catch (err) {
-        res.status(500).send("Something went wrong: " + err.message);
-    }
-});
-
-// Get all users (Feed API)
 app.get("/feed", async (req, res) => {
     try {
         const users = await User.find({});

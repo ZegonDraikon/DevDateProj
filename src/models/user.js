@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
+    enum: {
+      values: ['male', 'female', 'other'],
+      message: `{VALUE} is not valid`
+    },
     validate(value) {
       if(!["male", "female", "others"].includes(values)) {
         throw new Error("Invalid gender type");
@@ -52,11 +56,28 @@ const userSchema = new mongoose.Schema({
   },
   skills: {
     type: [String],
-  }
+  },
+  
 
 },{
   timestamps: true,
-})
+});
 
+userSchema.methods.getJWT = async function () {
+  const token = await jwt.sign({
+    _id: userSchema._id
+  },
+"DEVTINDER1234", {
+  expires: "7d",
+});
+return token;
+}
+
+userSchema.methods.validatePassword = async function () {
+
+  const user = this;
+  const passwordHash = user.password;
+  const isPasswordValid = await bcrypt.comapre(password, passwordHash);
+};
 
 module.exports = mongoose.model("User", userSchema);
